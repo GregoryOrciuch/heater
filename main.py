@@ -141,7 +141,7 @@ def operation():
                 log.info("Heating time has passed")
                 turn_off()
             else:
-                log.info("Doing nothing, should remain ON, but measure voltage")
+                log.info("Doing nothing, should remain ON, but measure voltage. Minutes left: "+str(HEATER_MAX_RUN_MIN-minutes_diff))
                 if voltage < 28.1:
                     log.info("Voltage 28.1, turning off")
                     turn_off()
