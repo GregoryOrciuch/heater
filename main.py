@@ -61,7 +61,7 @@ def get_temp():
 
 
 def get_voltage():
-    result = requests.get("http://localhost:8080/munin")
+    result = requests.get("http://localhost:8080/munin", timeout=2)
     m = re.findall("volt.value \d+\.\d+", str(result.content))
     voltage = float(m[0].split()[1])
     return voltage
