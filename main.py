@@ -65,10 +65,13 @@ def get_voltage():
 
 
 def test_procedure():
+    try:
+        state = read_state()
+        turn_on_time =  datetime.fromisoformat(state['turn-on-time'])
+        print("Last turn on time was: "+turn_on_time.isoformat())
+    except FileNotFoundError as e:
+        print("file was not found")
 
-    state = read_state()
-    turn_on_time =  datetime.fromisoformat(state['turn-on-time'])
-    print("Last turn on time was: "+turn_on_time.isoformat())
 
     temp = get_temp()
     print("t: "+str(temp))
