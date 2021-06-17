@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from datetime import datetime, time
 from time import sleep
@@ -21,7 +22,7 @@ def turn_on():
     data = json.loads(result.content)
     state = str(data['POWER'])
     if state.lower() == 'ON'.lower():
-        print("Turn-on OK.")
+        log.info("Turn-on OK.")
         state = {'turn-on-time': str(datetime.now().isoformat())}
         write_state(state)
         return True
@@ -34,7 +35,7 @@ def turn_off():
     data = json.loads(result.content)
     state = str(data['POWER'])
     if state.lower() == 'OFF'.lower():
-        print("Turn-off OK.")
+        log.info("Turn-off OK.")
         state = {'turn-off-time': str(datetime.now().isoformat())}
         write_state(state)
         return True
@@ -71,108 +72,119 @@ def test_procedure():
         state = read_state()
         if 'turn-on-time' in state:
             turn_on_time = datetime.fromisoformat(state['turn-on-time'])
-            print("Last turn on time was: "+turn_on_time.isoformat())
+            log.info("Last turn on time was: "+turn_on_time.isoformat())
         else:
-            print("Turn on time was not found")
+            log.info("Turn on time was not found")
     except FileNotFoundError as e:
-        print("Heater state was not found")
+        log.info("Heater state was not found")
 
     try:
         state = read_state()
         if 'turn-off-time' in state:
             turn_off_time = datetime.fromisoformat(state['turn-off-time'])
-            print("Last turn off time was: " + turn_off_time.isoformat())
+            log.info("Last turn off time was: " + turn_off_time.isoformat())
         else:
-            print("Turn off time was not found")
+            log.info("Turn off time was not found")
     except FileNotFoundError as e:
-        print("Heater state was not found")
+        log.info("Heater state was not found")
 
 
     temp = get_temp()
-    print("t: "+str(temp))
+    log.info("t: "+str(temp))
     voltage = get_voltage()
-    print("v: "+str(voltage))
+    log.info("v: "+str(voltage))
 
-    print("testing... turn on")
+    log.info("testing... turn on")
     was_on = turn_on()
     if not was_on:
         raise Exception("Unable to turn on the heater")
-    print("Sleeping 5 sec, and turn off...")
+    log.info("Sleeping 5 sec, and turn off...")
     sleep(5)
 
     was_off = turn_off()
     if not was_off:
         raise Exception("Unable to turn off the heater")
 
-    print("test is finished")
+    log.info("test is finished")
 
 
 def operation():
     temp = get_temp()
-    print("t: " + str(temp))
+    log.info("t: " + str(temp))
     voltage = get_voltage()
-    print("v: " + str(voltage))
+    log.info("v: " + str(voltage))
 
-    start = time(15)
-    end = time(9)
+    start = time(9)
+    end = time(15)
     now_time = datetime.now().time()
     if start <= now_time <= end:
-        print("we are in time range 9-15, can continue")
+        log.info("we are in time range 9-15, can continue")
     else:
-        print("Outside working time range 9-15, exiting")
+        log.info("Outside working time range 9-15, exiting")
         exit()
 
     current_state = get_relay_state()
     if current_state:
-        print("h:ON")
+        log.info("h:ON")
     else:
-        print("h:OFF")
+        log.info("h:OFF")
 
     # if v>28.5 and v< 28.9, turn on the heater for next 30min
     try:
         state = read_state()
         if 'turn-on-time' in state:
             turn_on_time = datetime.fromisoformat(state['turn-on-time'])
-            print("Last turn on time was: "+turn_on_time.isoformat())
+            log.info("Last turn on time was: "+turn_on_time.isoformat())
             minutes_diff = (datetime.now() - turn_on_time).total_seconds() / 60.0
             if minutes_diff > HEATER_MAX_RUN_MIN:
-                print("Heating time has passed")
+                log.info("Heating time has passed")
                 turn_off()
             else:
-                print("Doing nothing, should remain ON, but measure voltage")
+                log.info("Doing nothing, should remain ON, but measure voltage")
                 if voltage < 28.1:
-                    print("Voltage 28.1, turning off")
+                    log.info("Voltage 28.1, turning off")
                     turn_off()
 
         else:
-            print("Turn on time was not found")
+            log.info("Turn on time was not found")
 
         if 'turn-off-time' in state:
             turn_off_time = datetime.fromisoformat(state['turn-off-time'])
-            print("Last turn off time was: " + turn_off_time.isoformat())
+            log.info("Last turn off time was: " + turn_off_time.isoformat())
             minutes_diff = (datetime.now() - turn_off_time).total_seconds() / 60.0
             if minutes_diff > HEATER_MAX_COOLDOWN_MIN:
                 # turn on if voltage is good
                 if voltage > 28.50:
-                    print("heater was cooled down, voltage is good, turning on for min: "+str(HEATER_MAX_RUN_MIN))
+                    log.info("heater was cooled down, voltage is good, turning on for min: "+str(HEATER_MAX_RUN_MIN))
                     turn_on()
                 else:
-                    print("voltage not in desired range")
+                    log.info("voltage not in desired range")
             else:
-                print("Cooldown time not met, doing nothing.")
+                log.info("Cooldown time not met, doing nothing.")
 
         else:
-            print("Turn off time was not found")
+            log.info("Turn off time was not found")
 
     except FileNotFoundError as e:
-        print("Heater state was not found")
-
+        log.info("Heater state was not found")
 
 
 if __name__ == '__main__':
+    logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
+    log = logging.getLogger()
+
+    logPath = "/va/log"
+    filename = "heater"
+    fileHandler = logging.FileHandler("{0}/{1}.log".format(logPath, fileName))
+    fileHandler.setFormatter(logFormatter)
+    log.addHandler(fileHandler)
+
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    log.addHandler(consoleHandler)
 
     HEATER_IP = "192.168.0.118"
-    HEATER_MAX_RUN_MIN = 10
+    HEATER_MAX_RUN_MIN = 15
     HEATER_MAX_COOLDOWN_MIN = 1
     #test_procedure()
     operation()
