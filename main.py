@@ -174,7 +174,7 @@ if __name__ == '__main__':
     log = logging.getLogger()
 
     logPath = "/va/log"
-    filename = "heater"
+    fileName = "heater"
     fileHandler = logging.FileHandler("{0}/{1}.log".format(logPath, fileName))
     fileHandler.setFormatter(logFormatter)
     log.addHandler(fileHandler)
