@@ -113,8 +113,8 @@ def operation():
     voltage = get_voltage()
     print("v: " + str(voltage))
 
-    start = time(9)
-    end = time(15)
+    start = time(15)
+    end = time(9)
     now_time = datetime.now().time()
     if start <= now_time <= end:
         print("we are in time range 9-15, can continue")
