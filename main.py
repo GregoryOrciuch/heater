@@ -88,7 +88,6 @@ def test_procedure():
     except FileNotFoundError as e:
         log.info("Heater state was not found")
 
-
     temp = get_temp()
     log.info("t: "+str(temp))
     voltage = get_voltage()
@@ -169,6 +168,8 @@ def operation():
 
     except FileNotFoundError as e:
         log.info("Heater state was not found")
+
+    log.info("-------end-------")
 
 
 if __name__ == '__main__':
