@@ -131,7 +131,6 @@ def operation():
                 turn_off()
             else:
                 print("Doing nothing, should remain ON")
-                turn_on()
         else:
             print("Turn on time was not found")
 
