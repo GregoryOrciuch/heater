@@ -1,9 +1,20 @@
 import json
 import re
+from datetime import datetime
 from time import sleep
 
 import requests
 
+
+def write_state(state):
+    with open('heater_state.json', 'w') as outfile:
+        json.dump(state, outfile)
+
+
+def read_state():
+    with open('heater_state.json') as json_file:
+        state = json.load(json_file)
+        return state
 
 def turn_on():
     result = requests.get("http://" + HEATER_IP + "/cm?cmnd=Power%20ON")
@@ -11,6 +22,8 @@ def turn_on():
     state = str(data['POWER'])
     if state.lower() == 'ON'.lower():
         print("Turn-on OK.")
+        state['turn-on-time'] = datetime.now().isoformat()
+        write_state(state)
         return True
     else:
         return False
@@ -51,7 +64,11 @@ def get_voltage():
     return voltage
 
 
-def procedure():
+def test_procedure():
+
+    state = read_state()
+    turn_on_time =  datetime.fromisoformat(state['turn-on-time'])
+    print("Last turn on time was: "+turn_on_time.isoformat())
 
     temp = get_temp()
     print("t: "+str(temp))
@@ -75,4 +92,4 @@ def procedure():
 if __name__ == '__main__':
 
     HEATER_IP = "192.168.0.118"
-    procedure()
+    test_procedure()
