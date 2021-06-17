@@ -172,6 +172,7 @@ def operation():
 if __name__ == '__main__':
     logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
     log = logging.getLogger()
+    log.setLevel(logging.getLevelName('INFO'))
 
     logPath = "/var/log"
     fileName = "heater"
