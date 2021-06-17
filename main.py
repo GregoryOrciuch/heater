@@ -22,7 +22,7 @@ def turn_on():
     state = str(data['POWER'])
     if state.lower() == 'ON'.lower():
         print("Turn-on OK.")
-        state['turn-on-time'] = datetime.now().isoformat()
+        state = {'turn-on-time': str(datetime.now().isoformat())}
         write_state(state)
         return True
     else:
@@ -67,7 +67,7 @@ def get_voltage():
 def test_procedure():
     try:
         state = read_state()
-        turn_on_time =  datetime.fromisoformat(state['turn-on-time'])
+        turn_on_time = datetime.fromisoformat(state['turn-on-time'])
         print("Last turn on time was: "+turn_on_time.isoformat())
     except FileNotFoundError as e:
         print("file was not found")
