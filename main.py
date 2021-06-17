@@ -135,7 +135,7 @@ def operation():
             minutes_diff = (datetime.now() - turn_off_time).total_seconds() / 60.0
             if minutes_diff > HEATER_MAX_COOLDOWN_MIN:
                 # turn on if voltage is good
-                if 28.5 < voltage < 28.9:
+                if voltage > 28.50:
                     print("heater was cooled down, voltage is good, turning on")
                     turn_on()
                 else:
