@@ -113,6 +113,15 @@ def operation():
     voltage = get_voltage()
     print("v: " + str(voltage))
 
+    start = datetime.time(9)
+    end = datetime.time(15)
+    now_time = datetime.now().time()
+    if start <= now_time <= end:
+        print("we are in time range 9-15, can continue")
+    else:
+        print("Outside working time range 9-15, exiting")
+        exit()
+
     current_state = get_relay_state()
     if current_state:
         print("h:ON")
@@ -163,7 +172,7 @@ def operation():
 if __name__ == '__main__':
 
     HEATER_IP = "192.168.0.118"
-    HEATER_MAX_RUN_MIN = 5
+    HEATER_MAX_RUN_MIN = 10
     HEATER_MAX_COOLDOWN_MIN = 1
     #test_procedure()
     operation()
