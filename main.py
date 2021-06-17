@@ -113,6 +113,12 @@ def operation():
     voltage = get_voltage()
     print("v: " + str(voltage))
 
+    current_state = get_relay_state()
+    if current_state:
+        print("h:ON")
+    else:
+        print("h:OFF")
+
     # if v>28.5 and v< 28.9, turn on the heater for next 30min
     try:
         state = read_state()
