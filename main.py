@@ -67,10 +67,23 @@ def get_voltage():
 def test_procedure():
     try:
         state = read_state()
-        turn_on_time = datetime.fromisoformat(state['turn-on-time'])
-        print("Last turn on time was: "+turn_on_time.isoformat())
+        if 'turn-on-time' in state:
+            turn_on_time = datetime.fromisoformat(state['turn-on-time'])
+            print("Last turn on time was: "+turn_on_time.isoformat())
+        else:
+            print("Turn on time was not found")
     except FileNotFoundError as e:
-        print("file was not found")
+        print("Heater state was not found")
+
+    try:
+        state = read_state()
+        if 'turn-off-time' in state:
+            turn_off_time = datetime.fromisoformat(state['turn-off-time'])
+            print("Last turn off time was: " + turn_off_time.isoformat())
+        else:
+            print("Turn off time was not found")
+    except FileNotFoundError as e:
+        print("Heater state was not found")
 
 
     temp = get_temp()
