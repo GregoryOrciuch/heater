@@ -109,6 +109,7 @@ def test_procedure():
 
 
 def operation():
+    log.info("-------starting-------")
     temp = get_temp()
     log.info("t: " + str(temp))
     voltage = get_voltage()
