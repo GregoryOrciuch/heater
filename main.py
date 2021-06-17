@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import datetime
+from datetime import datetime, time
 from time import sleep
 
 import requests
@@ -113,8 +113,8 @@ def operation():
     voltage = get_voltage()
     print("v: " + str(voltage))
 
-    start = datetime.time(9)
-    end = datetime.time(15)
+    start = time(9)
+    end = time(15)
     now_time = datetime.now().time()
     if start <= now_time <= end:
         print("we are in time range 9-15, can continue")
