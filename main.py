@@ -130,7 +130,11 @@ def operation():
                 print("Heating time has passed")
                 turn_off()
             else:
-                print("Doing nothing, should remain ON")
+                print("Doing nothing, should remain ON, but measure voltage")
+                if voltage < 28.1:
+                    print("Voltage 28.1, turning off")
+                    turn_off()
+
         else:
             print("Turn on time was not found")
 
