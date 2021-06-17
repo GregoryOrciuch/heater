@@ -173,7 +173,7 @@ if __name__ == '__main__':
     logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
     log = logging.getLogger()
 
-    logPath = "/va/log"
+    logPath = "/var/log"
     fileName = "heater"
     fileHandler = logging.FileHandler("{0}/{1}.log".format(logPath, fileName))
     fileHandler.setFormatter(logFormatter)
