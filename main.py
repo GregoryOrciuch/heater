@@ -122,6 +122,7 @@ def operation():
         log.info("we are in time range 9-15, can continue")
     else:
         log.info("Outside working time range 9-15, exiting")
+        turn_off()
         exit()
 
     current_state = get_relay_state()
