@@ -35,6 +35,8 @@ def turn_off():
     state = str(data['POWER'])
     if state.lower() == 'OFF'.lower():
         print("Turn-off OK.")
+        state = {'turn-off-time': str(datetime.now().isoformat())}
+        write_state(state)
         return True
     else:
         return False
