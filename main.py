@@ -136,7 +136,7 @@ def operation():
             if minutes_diff > HEATER_MAX_COOLDOWN_MIN:
                 # turn on if voltage is good
                 if voltage > 28.50:
-                    print("heater was cooled down, voltage is good, turning on")
+                    print("heater was cooled down, voltage is good, turning on for min: "+HEATER_MAX_RUN_MIN)
                     turn_on()
                 else:
                     print("voltage not in desired range")
