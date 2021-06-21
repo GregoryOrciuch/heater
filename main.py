@@ -17,6 +17,7 @@ def read_state():
         state = json.load(json_file)
         return state
 
+
 def turn_on():
     result = requests.get("http://" + HEATER_IP + "/cm?cmnd=Power%20ON")
     data = json.loads(result.content)
@@ -129,6 +130,11 @@ def operation():
         log.info("h:ON")
     else:
         log.info("h:OFF")
+
+    if temp > 65:
+        log.info("Temp above 65. Turn off.")
+        turn_off()
+        exit()
 
     # if v>28.5 and v< 28.9, turn on the heater for next 30min
     try:
