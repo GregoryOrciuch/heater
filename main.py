@@ -1,11 +1,25 @@
 import json
 import logging
 import re
+import smbus2
+import bme280
 from datetime import datetime, time
 from time import sleep
 
 import requests
 
+
+def get_bme_temp():
+    port = 1
+    address = 0x76
+    bus = smbus2.SMBus(port)
+
+    calibration_params = bme280.load_calibration_params(bus, address)
+
+    # the sample method will take a single reading and return a
+    # compensated_reading object
+    data = bme280.sample(bus, address, calibration_params)
+    return round(data.temperature, 3)
 
 def write_state(state):
     with open('heater_state.json', 'w') as outfile:
@@ -114,6 +128,8 @@ def operation():
     log.info("t: " + str(temp))
     voltage = get_voltage()
     log.info("v: " + str(voltage))
+    bme_temp = get_bme_temp()
+    log.info("bme: " + str(bme_temp))
 
     start = time(9)
     end = time(15)
