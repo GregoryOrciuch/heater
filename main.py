@@ -129,22 +129,22 @@ def operation():
     log.info("t: " + str(temp))
     voltage = get_voltage()
     log.info("v: " + str(voltage))
-    bme_temp = get_bme_temp()
-    log.info("bme: " + str(bme_temp))
-
-    current_state_vent = get_relay_state(VENT_IP, "POWER1")
-    if current_state_vent:
-        log.info("v:ON")
-    else:
-        log.info("v:OFF")
-
-    if bme_temp > 36.0:
-        log.info("Turning ON the Vent, temp over 36.0 C")
-        turn_on_device(VENT_IP, "POWER1")
-
-    if bme_temp < 35.0:
-        log.info("Turning OFF the Vent, temp below 35.0 C")
-        turn_off_device(VENT_IP, "POWER1")
+    # bme_temp = get_bme_temp()
+    # log.info("bme: " + str(bme_temp))
+    #
+    # current_state_vent = get_relay_state(VENT_IP, "POWER1")
+    # if current_state_vent:
+    #     log.info("v:ON")
+    # else:
+    #     log.info("v:OFF")
+    #
+    # if bme_temp > 36.0:
+    #     log.info("Turning ON the Vent, temp over 36.0 C")
+    #     turn_on_device(VENT_IP, "POWER1")
+    #
+    # if bme_temp < 35.0:
+    #     log.info("Turning OFF the Vent, temp below 35.0 C")
+    #     turn_off_device(VENT_IP, "POWER1")
 
     start = time(9)
     end = time(15)
