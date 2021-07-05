@@ -197,6 +197,9 @@ def operation():
                     turn_on_device(HEATER_IP, "POWER")
                 else:
                     log.info("voltage not in desired range")
+                    if current_state_heater:
+                        log.info("heater found in ON state, turning off")
+                        turn_off_device(HEATER_IP, "POWER")
             else:
                 log.info("Cooldown time not met, doing nothing.")
 
