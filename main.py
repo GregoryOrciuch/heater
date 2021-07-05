@@ -23,7 +23,7 @@ def get_bme_temp():
         return round(data.temperature, 2)
     except IOError as e:
         log.error("Cannot communicate with BME, error: "+str(e))
-        return 0.0
+        return 99.0
 
 
 def write_state(state, device):
