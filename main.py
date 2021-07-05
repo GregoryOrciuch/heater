@@ -146,8 +146,8 @@ def operation():
         log.info("Turning ON the Vent, temp over 36.0 C")
         turn_on_device(VENT_IP, "POWER1", "vent")
 
-    if bme_temp < 34.0:
-        log.info("Turning OFF the Vent, temp below 34.0 C")
+    if bme_temp < 33.0:
+        log.info("Turning OFF the Vent, temp below 33.0 C")
         turn_off_device(VENT_IP, "POWER1", "vent")
 
     start = time(9)
