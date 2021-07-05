@@ -10,16 +10,20 @@ import requests
 
 
 def get_bme_temp():
-    port = 1
-    address = 0x76
-    bus = smbus2.SMBus(port)
+    try:
+        port = 1
+        address = 0x76
+        bus = smbus2.SMBus(port)
 
-    calibration_params = bme280.load_calibration_params(bus, address)
+        calibration_params = bme280.load_calibration_params(bus, address)
 
-    # the sample method will take a single reading and return a
-    # compensated_reading object
-    data = bme280.sample(bus, address, calibration_params)
-    return round(data.temperature, 2)
+        # the sample method will take a single reading and return a
+        # compensated_reading object
+        data = bme280.sample(bus, address, calibration_params)
+        return round(data.temperature, 2)
+    except Exception as e:
+        log.error("Cannot communicate with BME, erro: "+str(e))
+        return 0.0
 
 
 def write_state(state):
@@ -136,16 +140,15 @@ def operation():
     else:
         log.info("v:OFF")
 
-    # bme_temp = get_bme_temp()
-    #
-    # log.info("bme: " + str(bme_temp))
-    # if bme_temp > 36.0:
-    #     log.info("Turning ON the Vent, temp over 36.0 C")
-    #     turn_on_device(VENT_IP, "POWER1")
-    #
-    # if bme_temp < 35.0:
-    #     log.info("Turning OFF the Vent, temp below 35.0 C")
-    #     turn_off_device(VENT_IP, "POWER1")
+    bme_temp = get_bme_temp()
+    log.info("bme: " + str(bme_temp))
+    if bme_temp > 36.0:
+        log.info("Turning ON the Vent, temp over 36.0 C")
+        turn_on_device(VENT_IP, "POWER1")
+
+    if bme_temp < 35.0:
+        log.info("Turning OFF the Vent, temp below 35.0 C")
+        turn_off_device(VENT_IP, "POWER1")
 
     start = time(9)
     end = time(15)
