@@ -21,8 +21,8 @@ def get_bme_temp():
         # compensated_reading object
         data = bme280.sample(bus, address, calibration_params)
         return round(data.temperature, 2)
-    except Exception as e:
-        log.error("Cannot communicate with BME, erro: "+str(e))
+    except IOError as e:
+        log.error("Cannot communicate with BME, error: "+str(e))
         return 0.0
 
 

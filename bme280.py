@@ -26,5 +26,5 @@ try:
     print("pres "+str(round(data.pressure, 3)))
     print("hum "+str(round(data.humidity, 3)))
 
-except Exception as e:
+except IOError as e:
     print("error:"+str(e))
