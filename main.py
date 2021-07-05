@@ -132,16 +132,6 @@ def operation():
     bme_temp = get_bme_temp()
     log.info("bme: " + str(bme_temp))
 
-    start = time(9)
-    end = time(15)
-    now_time = datetime.now().time()
-    if start <= now_time <= end:
-        log.info("we are in time range 9-15, can continue")
-    else:
-        log.info("Outside working time range 9-15, exiting")
-        turn_off_device(HEATER_IP)
-        exit()
-
     current_state_vent = get_relay_state(VENT_IP)
     if current_state_vent:
         log.info("v:ON")
@@ -155,6 +145,16 @@ def operation():
     if bme_temp < 35.0:
         log.info("Turning OFF the Vent, temp below 35.0 C")
         turn_off_device(VENT_IP)
+
+    start = time(9)
+    end = time(15)
+    now_time = datetime.now().time()
+    if start <= now_time <= end:
+        log.info("we are in time range 9-15, can continue")
+    else:
+        log.info("Outside working time range 9-15, exiting")
+        turn_off_device(HEATER_IP)
+        exit()
 
     current_state_heater = get_relay_state(HEATER_IP)
     if current_state_heater:
