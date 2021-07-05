@@ -142,8 +142,22 @@ def operation():
         turn_off_device(HEATER_IP)
         exit()
 
-    current_state = get_relay_state(HEATER_IP)
-    if current_state:
+    current_state_vent = get_relay_state(VENT_IP)
+    if current_state_vent:
+        log.info("v:ON")
+    else:
+        log.info("v:OFF")
+
+    if bme_temp > 36.0:
+        log.info("Turning ON the Vent, temp over 36.0 C")
+        turn_on_device(VENT_IP)
+
+    if bme_temp < 35.0:
+        log.info("Turning OFF the Vent, temp below 35.0 C")
+        turn_off_device(VENT_IP)
+
+    current_state_heater = get_relay_state(HEATER_IP)
+    if current_state_heater:
         log.info("h:ON")
     else:
         log.info("h:OFF")
