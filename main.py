@@ -89,7 +89,7 @@ def get_voltage():
 
 def test_procedure():
     try:
-        state = read_state()
+        state = read_state("heater")
         if 'turn-on-time' in state:
             turn_on_time = datetime.fromisoformat(state['turn-on-time'])
             log.info("Last turn on time was: "+turn_on_time.isoformat())
@@ -99,7 +99,7 @@ def test_procedure():
         log.info("Heater state was not found")
 
     try:
-        state = read_state()
+        state = read_state("heater")
         if 'turn-off-time' in state:
             turn_off_time = datetime.fromisoformat(state['turn-off-time'])
             log.info("Last turn off time was: " + turn_off_time.isoformat())
@@ -173,7 +173,7 @@ def operation():
 
     # if v>28.5 and v< 28.9, turn on the heater for next 30min
     try:
-        state = read_state()
+        state = read_state("heater")
         if 'turn-on-time' in state:
             turn_on_time = datetime.fromisoformat(state['turn-on-time'])
             log.info("Last turn on time was: "+turn_on_time.isoformat())
