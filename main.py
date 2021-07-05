@@ -136,9 +136,9 @@ def operation():
 
     current_state_vent = get_relay_state(VENT_IP, "POWER1")
     if current_state_vent:
-        log.info("v:ON")
+        log.info("vent:ON")
     else:
-        log.info("v:OFF")
+        log.info("vent:OFF")
 
     bme_temp = get_bme_temp()
     log.info("bme: " + str(bme_temp))
