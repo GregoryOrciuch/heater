@@ -26,38 +26,38 @@ def get_bme_temp():
         return 0.0
 
 
-def write_state(state):
-    with open('heater_state.json', 'w') as outfile:
+def write_state(state, device):
+    with open(device+'_state.json', 'w') as outfile:
         json.dump(state, outfile)
 
 
-def read_state():
-    with open('heater_state.json') as json_file:
+def read_state(device):
+    with open(device+'_state.json') as json_file:
         state = json.load(json_file)
         return state
 
 
-def turn_on_device(device_ip, component):
+def turn_on_device(device_ip, component, device):
     result = requests.get("http://" + device_ip + "/cm?cmnd="+component+"%20ON")
     data = json.loads(result.content)
     state = str(data[component])
     if state.lower() == 'ON'.lower():
         log.info("Turn-on OK: "+device_ip)
         state = {'turn-on-time': str(datetime.now().isoformat())}
-        write_state(state)
+        write_state(state,device)
         return True
     else:
         return False
 
 
-def turn_off_device(device_ip, component):
+def turn_off_device(device_ip, component, device):
     result = requests.get("http://" + device_ip + "/cm?cmnd="+component+"%20OFF")
     data = json.loads(result.content)
     state = str(data[component])
     if state.lower() == 'OFF'.lower():
         log.info("Turn-off OK: "+device_ip)
         state = {'turn-off-time': str(datetime.now().isoformat())}
-        write_state(state)
+        write_state(state, device)
         return True
     else:
         return False
@@ -114,13 +114,13 @@ def test_procedure():
     log.info("v: "+str(voltage))
 
     log.info("testing... turn on")
-    was_on = turn_on_device(HEATER_IP, "POWER")
+    was_on = turn_on_device(HEATER_IP, "POWER", "heater")
     if not was_on:
         raise Exception("Unable to turn on the heater")
     log.info("Sleeping 5 sec, and turn off...")
     sleep(5)
 
-    was_off = turn_off_device(HEATER_IP, "POWER")
+    was_off = turn_off_device(HEATER_IP, "POWER", "heater")
     if not was_off:
         raise Exception("Unable to turn off the heater")
 
@@ -144,11 +144,11 @@ def operation():
     log.info("bme: " + str(bme_temp))
     if bme_temp > 36.0:
         log.info("Turning ON the Vent, temp over 36.0 C")
-        turn_on_device(VENT_IP, "POWER1")
+        turn_on_device(VENT_IP, "POWER1", "vent")
 
     if bme_temp < 35.0:
         log.info("Turning OFF the Vent, temp below 35.0 C")
-        turn_off_device(VENT_IP, "POWER1")
+        turn_off_device(VENT_IP, "POWER1", "vent")
 
     start = time(9)
     end = time(15)
@@ -157,7 +157,7 @@ def operation():
         log.info("we are in time range 9-15, can continue")
     else:
         log.info("Outside working time range 9-15, exiting")
-        turn_off_device(HEATER_IP, "POWER")
+        turn_off_device(HEATER_IP, "POWER", "heater")
         exit()
 
     current_state_heater = get_relay_state(HEATER_IP, "POWER")
@@ -168,7 +168,7 @@ def operation():
 
     if temp > 65:
         log.info("Temp above 65. Turn off.")
-        turn_off_device(HEATER_IP, "POWER")
+        turn_off_device(HEATER_IP, "POWER", "heater")
         exit()
 
     # if v>28.5 and v< 28.9, turn on the heater for next 30min
@@ -180,12 +180,12 @@ def operation():
             minutes_diff = (datetime.now() - turn_on_time).total_seconds() / 60.0
             if minutes_diff > HEATER_MAX_RUN_MIN:
                 log.info("Heating time has passed")
-                turn_off_device(HEATER_IP, "POWER")
+                turn_off_device(HEATER_IP, "POWER", "heater")
             else:
                 log.info("Doing nothing, should remain ON, but measure voltage. Minutes left: "+str(int(HEATER_MAX_RUN_MIN-minutes_diff)))
                 if voltage < 28.1:
                     log.info("Voltage 28.1, turning off")
-                    turn_off_device(HEATER_IP, "POWER")
+                    turn_off_device(HEATER_IP, "POWER", "heater")
 
         else:
             log.info("Turn on time was not found")
@@ -198,12 +198,12 @@ def operation():
                 # turn on if voltage is good
                 if voltage > 28.50:
                     log.info("heater was cooled down, voltage is good, turning on for min: "+str(HEATER_MAX_RUN_MIN))
-                    turn_on_device(HEATER_IP, "POWER")
+                    turn_on_device(HEATER_IP, "POWER", "heater")
                 else:
                     log.info("voltage not in desired range")
                     if current_state_heater:
                         log.info("heater found in ON state, turning off")
-                        turn_off_device(HEATER_IP, "POWER")
+                        turn_off_device(HEATER_IP, "POWER", "heater")
             else:
                 log.info("Cooldown time not met, doing nothing.")
 
