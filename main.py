@@ -1,28 +1,20 @@
 import json
 import logging
 import re
-import smbus2
-import bme280
+from w1thermsensor import W1ThermSensor, Sensor
 from datetime import datetime, time
 from time import sleep
 
 import requests
 
 
-def get_bme_temp():
+def get_multiplus_temp():
     try:
-        port = 1
-        address = 0x76
-        bus = smbus2.SMBus(port)
-
-        calibration_params = bme280.load_calibration_params(bus, address)
-
-        # the sample method will take a single reading and return a
-        # compensated_reading object
-        data = bme280.sample(bus, address, calibration_params)
-        return round(data.temperature, 2)
+        sensor = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id="08e10d1e64ff")
+        temperature_in_celsius = sensor.get_temperature()
+        return round(temperature_in_celsius, 2)
     except IOError as e:
-        log.error("Cannot communicate with BME, error: "+str(e))
+        log.error("Cannot communicate with multiplus temp, error: "+str(e))
         return 99.0
 
 
@@ -140,13 +132,13 @@ def operation():
     else:
         log.info("vent:OFF")
 
-    bme_temp = get_bme_temp()
-    log.info("bme: " + str(bme_temp))
-    if bme_temp > 36.0:
+    multiplus_temp = get_multiplus_temp()
+    log.info("multiplus_temp: " + str(multiplus_temp))
+    if multiplus_temp > 36.0:
         log.info("Turning ON the Vent, temp over 36.0 C")
         turn_on_device(VENT_IP, "POWER1", "vent")
 
-    if bme_temp < 33.0:
+    if multiplus_temp < 33.0:
         log.info("Turning OFF the Vent, temp below 33.0 C")
         turn_off_device(VENT_IP, "POWER1", "vent")
 
