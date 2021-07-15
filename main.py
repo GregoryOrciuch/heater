@@ -13,7 +13,7 @@ def get_multiplus_temp():
         sensor = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id="08e10d1e64ff")
         temperature_in_celsius = sensor.get_temperature()
         return round(temperature_in_celsius, 2)
-    except IOError as e:
+    except Exception as e:
         log.error("Cannot communicate with multiplus temp, error: "+str(e))
         return 99.0
 
