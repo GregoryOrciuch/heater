@@ -10,8 +10,8 @@ INFLUXDB_PASSWORD = 'reporting123'
 INFLUXDB_DATABASE = 'reporting'
 
 MQTT_ADDRESS = '127.0.0.1'
-MQTT_TOPIC = 'supla/+/+'
-MQTT_REGEX = 'supla/([^/]+)/([^/]+)'
+MQTT_TOPIC = 'supla/devices/zamel-mew-01-7c720/channels/0/state/+/+'
+MQTT_REGEX = 'supla/devices/zamel-mew-01-7c720/channels/0/state/([^/]+)/([^/]+)'
 MQTT_CLIENT_ID = 'MQTTInfluxDBBridge'
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8083, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
