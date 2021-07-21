@@ -58,16 +58,18 @@ def _send_sensor_data_to_influxdb(sensor_data):
 
 def on_message(client, userdata, msg):
     """The callback for when a PUBLISH message is received from the server."""
-    print(msg.topic + ' ' + str(msg.payload))
+    # print(msg.topic + ' ' + str(msg.payload))
     sensor_data = _parse_mqtt_message(msg.topic, msg.payload.decode('utf-8'))
     if sensor_data is not None:
         _send_sensor_data_to_influxdb(sensor_data)
+
 
 def _init_influxdb_database():
     databases = influxdb_client.get_list_database()
     if len(list(filter(lambda x: x['name'] == INFLUXDB_DATABASE, databases))) == 0:
         influxdb_client.create_database(INFLUXDB_DATABASE)
     influxdb_client.switch_database(INFLUXDB_DATABASE)
+
 
 def main():
     _init_influxdb_database()
@@ -81,5 +83,5 @@ def main():
 
 
 if __name__ == '__main__':
-    print('MQTT to InfluxDB bridge')
+    print('MQTT to InfluxDB bridge is running')
     main()
