@@ -1,0 +1,26 @@
+{
+  "StatusSNS": {
+    "Time": "2021-08-16T08:46:09",
+    "DS18B20-1": {
+      "Id": "08E10D1E64FF",
+      "Temperature": 44.1
+    },
+    "DS18B20-2": {
+      "Id": "29B40D1E64FF",
+      "Temperature": 34.8
+    },
+    "DS18B20-3": {
+      "Id": "3C01E0764830",
+      "Temperature": 43.1
+    },
+    "DS18B20-4": {
+      "Id": "517D141E64FF",
+      "Temperature": 25.8
+    },
+    "DS18B20-5": {
+      "Id": "CA6B141E64FF",
+      "Temperature": 30.1
+    },
+    "TempUnit": "C"
+  }
+}

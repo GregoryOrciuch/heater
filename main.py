@@ -1,20 +1,27 @@
 import json
 import logging
 import re
-from w1thermsensor import W1ThermSensor, Sensor
 from datetime import datetime, time
 from time import sleep
 
 import requests
 
 
-def get_multiplus_temp():
+def get_highest_temp():
+    DS18_IP = "192.168.0.124"
+
     try:
-        sensor = W1ThermSensor(sensor_type=Sensor.DS18B20, sensor_id="08e10d1e64ff")
-        temperature_in_celsius = sensor.get_temperature()
-        return round(temperature_in_celsius, 2)
+        result = requests.get("http://"+DS18_IP+"/cm?cmnd=Status%2010")
+        data = json.loads(result.content)
+        max_temp = 0
+        for x in range(1, 5):
+            ds_id = "DS18B20-"+str(x)
+            temp = data['StatusSNS'][ds_id]['Temperature']
+            if temp > max_temp:
+                max_temp = temp
+        return max_temp
     except Exception as e:
-        log.error("Cannot communicate with multiplus temp, error: "+str(e))
+        log.error("Cannot communicate with ds18b20 temp, error: "+str(e))
         return 99.0
 
 
@@ -132,13 +139,13 @@ def operation():
     else:
         log.info("vent:OFF")
 
-    multiplus_temp = get_multiplus_temp()
-    log.info("multiplus_temp: " + str(multiplus_temp))
-    if multiplus_temp > 36.0:
+    highest_temp = get_highest_temp()
+    log.info("highest_temp: " + str(highest_temp))
+    if highest_temp > 36.0:
         log.info("Turning ON the Vent, temp over 36.0 C")
         turn_on_device(VENT_IP, "POWER1", "vent")
 
-    if multiplus_temp < 33.0:
+    if highest_temp < 33.0:
         log.info("Turning OFF the Vent, temp below 33.0 C")
         turn_off_device(VENT_IP, "POWER1", "vent")
 
