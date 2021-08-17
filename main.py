@@ -14,7 +14,7 @@ def get_highest_temp():
         result = requests.get("http://"+DS18_IP+"/cm?cmnd=Status%2010")
         data = json.loads(result.content)
         max_temp = 0
-        for x in range(1, 5):
+        for x in range(1, 6):
             ds_id = "DS18B20-"+str(x)
             temp = data['StatusSNS'][ds_id]['Temperature']
             if temp > max_temp:
