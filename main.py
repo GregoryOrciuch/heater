@@ -19,6 +19,9 @@ def get_highest_temp():
             temp = data['StatusSNS'][ds_id]['Temperature']
             if temp > max_temp:
                 max_temp = temp
+
+        if max_temp == 0:
+            max_temp = 99
         return max_temp
     except Exception as e:
         log.error("Cannot communicate with ds18b20 temp, error: "+str(e))
