@@ -189,8 +189,10 @@ if __name__ == "__main__":
             #fet_ch_st = str(int(struct.unpack('>c', resp[103:105])[0],16))
             #mqttc.publish("bms/fet_ch_st", fet_ch_st)
 
-            cell_1 = struct.unpack('>H', resp[6:8])[0]*0.001
-            mqttc.publish("bms/cell_1", cell_1)
+            for i in range(1, 8):
+                #  cell_x = struct.unpack('>H', resp[6:8])[0]*0.001
+                cell_x = struct.unpack('>H', resp[(4+2*i):(6+2*i)])[0]*0.001
+                mqttc.publish("bms/cell_"+str(i), cell_x)
 
             time.sleep(1)
 
