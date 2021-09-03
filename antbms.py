@@ -156,8 +156,7 @@ if __name__ == "__main__":
         else:
 
             for i in range(1,17):
-                data = (resp.encode('hex') [((4+2*i)*2):((5+2*i)*2+2)])
-                lol2 = str((struct.unpack('>H',unhexlify(data))[0])*0.001)
+                lol2 = str((struct.unpack('>H',resp[((4+2*i)*2):((5+2*i)*2+2)])[0])*0.001)
                 data_string = 'vis.0.cell'+str(i)+',from=Raspi3B value=' + lol2
                 print(data_string)
 
