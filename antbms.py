@@ -185,9 +185,12 @@ if __name__ == "__main__":
             cell_max = struct.unpack('>H', resp[116:118])[0]*0.001
             mqttc.publish("bms/cell_max", cell_max)
 
-            print("resp:"+str(resp[103:105]))
-            fet_ch_st = str(int(struct.unpack('>b', resp[103:105])[0],16))
-            mqttc.publish("bms/fet_ch_st", fet_ch_st)
+            #print("resp:"+str(resp[103:105]))
+            #fet_ch_st = str(int(struct.unpack('>c', resp[103:105])[0],16))
+            #mqttc.publish("bms/fet_ch_st", fet_ch_st)
+
+            cell_1 = struct.unpack('>H', resp[6:8])[0]*0.001
+            mqttc.publish("bms/cell_1", cell_1)
 
             time.sleep(1)
 
