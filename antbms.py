@@ -155,6 +155,8 @@ if __name__ == "__main__":
         log.error(f'cannot open serial port {args.port}, terminating')
         exit(1)
 
+    influxdb_client.switch_database(INFLUXDB_DATABASE)
+
     mqttc = initMqttClient()
     if not mqttc:
         log.error('cannot initialize mqtt client, terminating')
