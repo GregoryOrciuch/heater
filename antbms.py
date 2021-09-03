@@ -179,6 +179,12 @@ if __name__ == "__main__":
             cell_avg = struct.unpack('>H', resp[121:123])[0]*0.001
             mqttc.publish("bms/cell_avg", cell_avg)
 
+            cell_min = struct.unpack('>H', resp[119:121])[0]*0.001
+            mqttc.publish("bms/cell_min", cell_min)
+
+            cell_max = struct.unpack('>H', resp[116:118])[0]*0.001
+            mqttc.publish("bms/cell_max", cell_max)
+
             time.sleep(1)
 
     if ser.isOpen():
