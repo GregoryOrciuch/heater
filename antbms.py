@@ -167,8 +167,9 @@ if __name__ == "__main__":
             power = format(struct.unpack('>i', resp[111:115])[0] / 1, '.0f')
             temp = struct.unpack('>h', resp[91:93])[0]
 
-            data = (resp.encode('hex')[(121*2):(122*2+2)])
-            cell_avg = str((struct.unpack('>H', unhexlify(data))[0])*0.001)
+            #data = (resp.encode('hex')[(121*2):(122*2+2)])
+            #cell_avg = str((struct.unpack('>H', unhexlify(data))[0])*0.001)
+            cell_avg = struct.unpack('>H', resp[(121*2):(122*2+2)])[0]*0.001
             mqttc.publish("bms/cell_avg", cell_avg)
 
             mqttc.publish("bms/battery_voltage", volt)
