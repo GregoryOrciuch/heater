@@ -3,12 +3,10 @@ import time
 import argparse
 import struct
 import json
-from binascii import unhexlify
-from pprint import pprint
-from si_lib import readbms
 
 import serial
 import paho.mqtt.client as mqttClient
+from influxdb import InfluxDBClient
 
 import logging
 
@@ -24,6 +22,12 @@ logging.basicConfig(
 log = logging.getLogger('bms')
 
 MSG_LEN = 140
+
+INFLUXDB_ADDRESS = '192.168.77.2'
+INFLUXDB_USER = 'reporting'
+INFLUXDB_PASSWORD = 'reporting123'
+INFLUXDB_DATABASE = 'reporting'
+influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8083, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
 
 def openCommPort(port):
     try:
@@ -118,6 +122,20 @@ def readFromPort(ser):
         return False
 
 
+def write_cell_measurement(location, measurement, value):
+    json_body = [
+        {
+            'measurement': location,
+            'tags': {
+                'location': measurement
+            },
+            'fields': {
+                'value': value
+            }
+        }
+    ]
+    influxdb_client.write_points(json_body)
+
 #
 #   Main program
 #
@@ -189,6 +207,7 @@ if __name__ == "__main__":
                 #  cell_x = struct.unpack('>H', resp[6:8])[0]*0.001
                 cell_x = struct.unpack('>H', resp[(4+2*i):(6+2*i)])[0]*0.001
                 mqttc.publish("bms/cell_"+str(i), cell_x)
+                write_cell_measurement("cell_"+str(i), "voltage", cell_x)
 
             time.sleep(1)
 
