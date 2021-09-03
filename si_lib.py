@@ -48,7 +48,7 @@ def readbms(ser_blue):
     if(ser_blue.isOpen() == False):
         ser_blue.open()
     Antw33 = ser_blue.read(140)
-    # print Antw33
+    print(Antw33)
     # if True:
     try:
         SoC = int((Antw33.encode('hex') [(74*2):(75*2)]),16)
