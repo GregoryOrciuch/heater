@@ -144,8 +144,8 @@ if __name__ == "__main__":
     log.info('start sending data to the mqtt broker')
     error = False
     while not error:
-        # resp = readFromPort(ser)
-        resp = readbms(ser)
+        resp = readFromPort(ser)
+        #resp = readbms(ser)
         pprint(resp)
 
         if not resp or len(resp) != MSG_LEN:
