@@ -155,10 +155,10 @@ if __name__ == "__main__":
             time.sleep(5)
         else:
 
-            for i in range(1,17):
-                lol2 = str((struct.unpack('>H',resp[((4+2*i)*2):((5+2*i)*2+2)])[0])*0.001)
-                data_string = 'vis.0.cell'+str(i)+',from=Raspi3B value=' + lol2
-                print(data_string)
+           # for i in range(1,17):
+           #     lol2 = str((struct.unpack('>H',resp[((4+2*i)*2):((5+2*i)*2+2)])[0])*0.001)
+           #    data_string = 'vis.0.cell'+str(i)+',from=Raspi3B value=' + lol2
+           #     print(data_string)
 
             volt = struct.unpack('>H', resp[4:6])[0] / 10
             current = struct.unpack('>i', resp[70:74])[0] / 10
