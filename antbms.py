@@ -3,6 +3,7 @@ import time
 import argparse
 import struct
 import json
+from binascii import unhexlify
 from pprint import pprint
 from si_lib import readbms
 
@@ -146,13 +147,19 @@ if __name__ == "__main__":
     while not error:
         resp = readFromPort(ser)
         #resp = readbms(ser)
-        pprint(resp)
+        #pprint(resp)
 
         if not resp or len(resp) != MSG_LEN:
             #something went wrong
             log.debug('reading from port failed, try again in 5 seconds')
             time.sleep(5)
         else:
+
+            for i in range(1,17):
+                data = (resp.encode('hex') [((4+2*i)*2):((5+2*i)*2+2)])
+                lol2 = str((struct.unpack('>H',unhexlify(data))[0])*0.001)
+                data_string = 'vis.0.cell'+str(i)+',from=Raspi3B value=' + lol2
+                print(data_string)
 
             volt = struct.unpack('>H', resp[4:6])[0] / 10
             current = struct.unpack('>i', resp[70:74])[0] / 10
