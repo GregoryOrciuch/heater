@@ -4,6 +4,7 @@ import argparse
 import struct
 import json
 from pprint import pprint
+from si_lib import readbms
 
 import serial
 import paho.mqtt.client as mqttClient
@@ -143,13 +144,16 @@ if __name__ == "__main__":
     log.info('start sending data to the mqtt broker')
     error = False
     while not error:
-        resp = readFromPort(ser)
+        # resp = readFromPort(ser)
+        resp = readbms(ser)
+        pprint(resp)
+
         if not resp or len(resp) != MSG_LEN:
             #something went wrong
             log.debug('reading from port failed, try again in 5 seconds')
             time.sleep(5)
         else:
-            pprint(resp)
+
             volt = struct.unpack('>H', resp[4:6])[0] / 10
             current = struct.unpack('>i', resp[70:74])[0] / 10
             remain = format(struct.unpack('>i', resp[79:83])[0] / 1000000, '.3f')
