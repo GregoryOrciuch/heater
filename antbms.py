@@ -186,7 +186,7 @@ if __name__ == "__main__":
             mqttc.publish("bms/cell_max", cell_max)
 
             print("resp:"+str(resp[103:105]))
-            fet_ch_st = str(int(struct.unpack('>h', resp[103:105])[0],16))
+            fet_ch_st = str(int(struct.unpack('>b', resp[103:105])[0],16))
             mqttc.publish("bms/fet_ch_st", fet_ch_st)
 
             time.sleep(1)
