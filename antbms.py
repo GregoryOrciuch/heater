@@ -201,7 +201,7 @@ if __name__ == "__main__":
 
             # data = (resp.encode('hex')[(121*2):(122*2+2)])
             # cell_avg = str((struct.unpack('>H', unhexlify(data))[0])*0.001)
-            print("prev ok")
+            # print("prev ok")
             cell_avg = struct.unpack('>H', resp[121:123])[0]*0.001
             # mqttc.publish("bms/cell_avg", cell_avg)
 
