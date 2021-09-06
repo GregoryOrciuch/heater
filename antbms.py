@@ -136,6 +136,7 @@ def write_cell_measurement(location, measurement, value):
     ]
     influxdb_client.write_points(json_body)
 
+
 #
 #   Main program
 #
@@ -157,12 +158,12 @@ if __name__ == "__main__":
 
     influxdb_client.switch_database(INFLUXDB_DATABASE)
 
-    mqttc = initMqttClient()
-    if not mqttc:
-        log.error('cannot initialize mqtt client, terminating')
-        exit(2)
+    # mqttc = initMqttClient()
+    # if not mqttc:
+    #    log.error('cannot initialize mqtt client, terminating')
+    #    exit(2)
 
-    log.info('start sending data to the mqtt broker')
+    log.info('start sending data to the influxdb')
     error = False
     while not error:
         resp = readFromPort(ser)
@@ -187,28 +188,33 @@ if __name__ == "__main__":
             power = format(struct.unpack('>i', resp[111:115])[0] / 1, '.0f')
             temp = struct.unpack('>h', resp[91:93])[0]
 
-            mqttc.publish("bms/battery_voltage", volt)
-            mqttc.publish("bms/battery_current", current)
-            mqttc.publish("bms/battery_remain", remain)
-            mqttc.publish("bms/battery_power", power)
-            mqttc.publish("bms/battery_temp", temp)
+            # mqttc.publish("bms/battery_voltage", volt)
+            write_cell_measurement("battery", "voltage", volt)
 
-            #data = (resp.encode('hex')[(121*2):(122*2+2)])
-            #cell_avg = str((struct.unpack('>H', unhexlify(data))[0])*0.001)
+            # mqttc.publish("bms/battery_current", current)
+            write_cell_measurement("battery", "current", current)
+
+            # mqttc.publish("bms/battery_remain", remain)
+            # mqttc.publish("bms/battery_power", power)
+            # mqttc.publish("bms/battery_temp", temp)
+            write_cell_measurement("battery", "temp", temp)
+
+            # data = (resp.encode('hex')[(121*2):(122*2+2)])
+            # cell_avg = str((struct.unpack('>H', unhexlify(data))[0])*0.001)
             print("prev ok")
             cell_avg = struct.unpack('>H', resp[121:123])[0]*0.001
-            mqttc.publish("bms/cell_avg", cell_avg)
+            # mqttc.publish("bms/cell_avg", cell_avg)
 
             cell_min = struct.unpack('>H', resp[119:121])[0]*0.001
-            mqttc.publish("bms/cell_min", cell_min)
+            # mqttc.publish("bms/cell_min", cell_min)
 
             cell_max = struct.unpack('>H', resp[116:118])[0]*0.001
-            mqttc.publish("bms/cell_max", cell_max)
+            # mqttc.publish("bms/cell_max", cell_max)
 
             for i in range(1, 8):
                 #  cell_x = struct.unpack('>H', resp[6:8])[0]*0.001
                 cell_x = struct.unpack('>H', resp[(4+2*i):(6+2*i)])[0]*0.001
-                mqttc.publish("bms/cell_"+str(i), cell_x)
+                # mqttc.publish("bms/cell_"+str(i), cell_x)
                 write_cell_measurement("cell_"+str(i), "voltage", cell_x)
 
             time.sleep(1)
