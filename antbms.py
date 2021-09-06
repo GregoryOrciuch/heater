@@ -189,15 +189,15 @@ if __name__ == "__main__":
             temp = struct.unpack('>h', resp[91:93])[0]
 
             # mqttc.publish("bms/battery_voltage", volt)
-            write_cell_measurement("battery", "voltage", volt)
+            write_cell_measurement("battery_voltage", "voltage", volt)
 
             # mqttc.publish("bms/battery_current", current)
-            write_cell_measurement("battery", "current", current)
+            write_cell_measurement("battery_current", "current", current)
 
             # mqttc.publish("bms/battery_remain", remain)
             # mqttc.publish("bms/battery_power", power)
             # mqttc.publish("bms/battery_temp", temp)
-            write_cell_measurement("battery", "temp", temp)
+            write_cell_measurement("battery_temp", "temp", temp)
 
             # data = (resp.encode('hex')[(121*2):(122*2+2)])
             # cell_avg = str((struct.unpack('>H', unhexlify(data))[0])*0.001)
@@ -222,5 +222,5 @@ if __name__ == "__main__":
     if ser.isOpen():
         ser.close()
 
-    log.debug('exit normaly')
+    log.debug('exit normally')
     exit(0)
