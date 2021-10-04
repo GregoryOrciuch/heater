@@ -98,7 +98,7 @@ def initMqttClient():
 #
 #   Read from serial port
 #
-def readFromPort(ser):
+def readFromPort(ser, errors_counter):
     try:
         if not ser.isOpen():
             ser.open()
@@ -119,6 +119,7 @@ def readFromPort(ser):
         return ser.read(MSG_LEN)
     except Exception as e:
         log.error('exception during read from port: '+ str(e))
+        errors_counter = errors_counter + 1
         return False
 
 
@@ -164,9 +165,14 @@ if __name__ == "__main__":
     #    exit(2)
 
     log.info('start sending data to the influxdb')
+    count_errors = 0
     error = False
     while not error:
-        resp = readFromPort(ser)
+        resp = readFromPort(ser, count_errors)
+        if count_errors > 10:
+            log.debug('exit with error, too many errors > 10')
+            exit(1)
+
         #resp = readbms(ser)
         #pprint(resp)
 
