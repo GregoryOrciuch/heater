@@ -98,7 +98,7 @@ def initMqttClient():
 #
 #   Read from serial port
 #
-def readFromPort(ser, errors_counter):
+def readFromPort(ser):
     try:
         if not ser.isOpen():
             ser.open()
