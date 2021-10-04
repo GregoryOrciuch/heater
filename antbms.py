@@ -119,7 +119,7 @@ def readFromPort(ser, errors_counter):
         return ser.read(MSG_LEN)
     except Exception as e:
         log.error('exception during read from port: '+ str(e))
-        errors_counter = errors_counter + 1
+        increment_error()
         return False
 
 
@@ -137,6 +137,10 @@ def write_cell_measurement(location, measurement, value):
     ]
     influxdb_client.write_points(json_body)
 
+
+def increment_error():
+    global COUNT
+    COUNT = COUNT+1
 
 #
 #   Main program
@@ -165,11 +169,11 @@ if __name__ == "__main__":
     #    exit(2)
 
     log.info('start sending data to the influxdb')
-    count_errors = 0
+    COUNT = 0
     error = False
     while not error:
-        resp = readFromPort(ser, count_errors)
-        if count_errors > 10:
+        resp = readFromPort(ser)
+        if COUNT > 10:
             log.debug('exit with error, too many errors > 10')
             exit(1)
 
