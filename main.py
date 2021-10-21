@@ -5,7 +5,15 @@ from datetime import datetime, time
 from time import sleep
 
 import requests
+from influxdb import InfluxDBClient
 
+
+def get_outside_temp():
+    influxdb_client.switch_database(INFLUXDB_DATABASE)
+    result = influxdb_client.query(
+        ("SELECT %s from %s ORDER by time DESC LIMIT 1") % ("temperature_C", "\"LaCrosse-TX141W\""))
+    for measurement in result.get_points():
+        return measurement['temperature_C']
 
 def get_highest_temp():
     DS18_IP = "192.168.0.124"
@@ -168,6 +176,15 @@ def operation():
     else:
         log.info("h:OFF")
 
+    current_state_pump = get_relay_state(PUMP_IP, "POWER")
+    if current_state_pump:
+        log.info("pump:ON")
+    else:
+        log.info("pump:OFF")
+
+    outside_temp = get_outside_temp()
+    log.info("outside_temp: " + str(outside_temp))
+
     if temp > 65:
         log.info("Temp above 65. Turn off.")
         turn_off_device(HEATER_IP, "POWER", "heater")
@@ -235,7 +252,16 @@ if __name__ == '__main__':
 
     VENT_IP = "192.168.0.119"
     HEATER_IP = "192.168.0.118"
+    PUMP_IP = "192.168.0.125"
     HEATER_MAX_RUN_MIN = 15
     HEATER_MAX_COOLDOWN_MIN = 1
+
+    INFLUXDB_ADDRESS = '192.168.77.2'
+    INFLUXDB_USER = 'reporting'
+    INFLUXDB_PASSWORD = 'reporting123'
+    INFLUXDB_DATABASE = 'reporting'
+
+    influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8083, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
+
     #test_procedure()
     operation()
