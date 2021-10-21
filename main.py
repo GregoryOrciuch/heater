@@ -176,6 +176,7 @@ def operation():
     else:
         log.info("h:OFF")
 
+    # pump logic
     current_state_pump = get_relay_state(PUMP_IP, "POWER")
     if current_state_pump:
         log.info("pump:ON")
@@ -184,6 +185,12 @@ def operation():
 
     outside_temp = get_outside_temp()
     log.info("outside_temp: " + str(outside_temp))
+    if temp < 4.0 or temp > 25.0:
+        turn_on_device(PUMP_IP, "POWER", "heater")
+    else:
+        turn_off_device(PUMP_IP, "POWER", "heater")
+
+    # eof pump logic
 
     if temp > 65:
         log.info("Temp above 65. Turn off.")
