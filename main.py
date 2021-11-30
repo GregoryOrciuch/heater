@@ -33,7 +33,7 @@ def get_highest_temp():
         return max_temp
     except Exception as e:
         log.error("Cannot communicate with ds18b20 temp, error: "+str(e))
-        return 99.0
+        return -99.0
 
 
 def write_state(state, device):
