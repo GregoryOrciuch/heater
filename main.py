@@ -22,7 +22,7 @@ def get_highest_temp():
         result = requests.get("http://"+DS18_IP+"/cm?cmnd=Status%2010")
         data = json.loads(result.content)
         max_temp = 0
-        for x in range(1, 6):
+        for x in [1,2,3,4]:
             ds_id = "DS18B20-"+str(x)
             temp = data['StatusSNS'][ds_id]['Temperature']
             if temp > max_temp:
@@ -33,7 +33,7 @@ def get_highest_temp():
         return max_temp
     except Exception as e:
         log.error("Cannot communicate with ds18b20 temp, error: "+str(e))
-        return -99.0
+        return 99.0
 
 
 def write_state(state, device):
