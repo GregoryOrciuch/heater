@@ -160,22 +160,6 @@ def operation():
         log.info("Turning OFF the Vent, temp below 33.0 C")
         turn_off_device(VENT_IP, "POWER1", "vent")
 
-    start = time(9)
-    end = time(15)
-    now_time = datetime.now().time()
-    if start <= now_time <= end:
-        log.info("we are in time range 9-15, can continue")
-    else:
-        log.info("Outside working time range 9-15, exiting")
-        turn_off_device(HEATER_IP, "POWER", "heater")
-        exit()
-
-    current_state_heater = get_relay_state(HEATER_IP, "POWER")
-    if current_state_heater:
-        log.info("h:ON")
-    else:
-        log.info("h:OFF")
-
     # pump logic
     current_state_pump = get_relay_state(PUMP_IP, "POWER")
     if current_state_pump:
@@ -191,6 +175,22 @@ def operation():
         turn_off_device(PUMP_IP, "POWER", "heater")
 
     # eof pump logic
+
+    start = time(9)
+    end = time(15)
+    now_time = datetime.now().time()
+    if start <= now_time <= end:
+        log.info("we are in time range 9-15, can continue")
+    else:
+        log.info("Outside working time range 9-15, exiting")
+        turn_off_device(HEATER_IP, "POWER", "heater")
+        exit()
+
+    current_state_heater = get_relay_state(HEATER_IP, "POWER")
+    if current_state_heater:
+        log.info("h:ON")
+    else:
+        log.info("h:OFF")
 
     if temp > 65:
         log.info("Temp above 65. Turn off.")
