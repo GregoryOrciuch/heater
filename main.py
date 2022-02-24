@@ -170,9 +170,9 @@ def operation():
     outside_temp = get_outside_temp()
     log.info("outside_temp: " + str(outside_temp))
     if outside_temp < 3.0 or outside_temp > 25.0:
-        turn_on_device(PUMP_IP, "POWER", "heater")
+        turn_on_device(PUMP_IP, "POWER", "pump")
     else:
-        turn_off_device(PUMP_IP, "POWER", "heater")
+        turn_off_device(PUMP_IP, "POWER", "pump")
 
     # eof pump logic
 
